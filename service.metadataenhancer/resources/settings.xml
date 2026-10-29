@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+  <category label="General">
+    <setting id="imdb_lookup" type="bool" label="Fill missing metadata (IMDb/TMDb id, title, year...) from the movie hash (OpenSubtitles.com)" default="true"/>
+  </category>
+  <category label="OpenSubtitles.com">
+    <setting id="os_username" type="text" label="Username" default=""/>
+    <setting id="os_password" type="text" option="hidden" label="Password" default=""/>
+    <setting id="os_api_key" type="text" option="hidden" label="API key (optional, overrides the built-in one)" default=""/>
+    <setting type="action" label="Import from the OpenSubtitles.com add-on" action="RunScript(special://home/addons/service.metadataenhancer/import_opensubtitles.py)"/>
+  </category>
+</settings>

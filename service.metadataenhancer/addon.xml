@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="service.metadataenhancer" name="Metadata Enhancer" version="0.3.0" provider-name="Megarushing">
+  <requires>
+    <import addon="xbmc.python" version="3.0.1"/>
+  </requires>
+  <extension point="xbmc.service" library="service.py"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en_GB">Gives subtitle add-ons the movie hash of streamed videos</summary>
+    <description lang="en_GB">When a video starts, computes its OpenSubtitles movie hash (file size + first and last 64 KiB) through Kodi's own file reader, so it also works for http streams (Elementum, debrid, other plugins). Publishes it on the Home window as videoinfo.current_path / current_size / current_oshash, which OpenSubtitles.com, SubSource and SubDL already read. When the playing video lacks metadata, asks OpenSubtitles.com for an exact movie-hash match and fills in only the EMPTY fields (IMDb and TMDb id, title, year, type, show/season/episode) - nothing already set is overwritten - so subtitle add-ons that need an IMDb id (a4kSubtitles) can search and the player shows a real title.</description>
+    <platform>all</platform>
+    <license>MIT</license>
+    <source>https://github.com/Megarushing/kodi-metadata-enhancer</source>
+  </extension>
+</addon>
