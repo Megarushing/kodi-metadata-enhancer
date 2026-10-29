@@ -1,5 +1,6 @@
 import json
 import threading
+from urllib.parse import unquote
 
 import xbmc
 import xbmcaddon
@@ -17,6 +18,7 @@ A4K_GRACE = 10  # seconds a4k's own auto-search gets before we re-run it
 PROP_PATH = "videoinfo.current_path"
 PROP_SIZE = "videoinfo.current_size"
 PROP_HASH = "videoinfo.current_oshash"
+PROP_FILENAME = "MetadataEnhancer.Filename"  # real file name for skins; Player.Filename is the plugin link (e.g. "history")
 LOG_TAG = "[service.metadataenhancer]"
 
 
@@ -75,9 +77,14 @@ def _preferred_subtitle_languages():
     return {xbmc.convertLanguage(n, xbmc.ISO_639_2) for n in names} - {""}
 
 
+def file_name(path):
+    """Last path part of a file path or URL, URL-decoded, without query string or credentials."""
+    return unquote(path.split("?", 1)[0].rstrip("/").rsplit("/", 1)[-1])
+
+
 def _redact(path):
     # the log may be shared; keep only the file name, never a query string or credentials
-    return path.split("?", 1)[0].rstrip("/").rsplit("/", 1)[-1]
+    return file_name(path)
 
 
 class Player(xbmc.Player):
@@ -90,7 +97,7 @@ class Player(xbmc.Player):
     def clear(self):
         with self.lock:
             self.generation += 1
-        for p in (PROP_PATH, PROP_SIZE, PROP_HASH):
+        for p in (PROP_PATH, PROP_SIZE, PROP_HASH, PROP_FILENAME):
             self.home.clearProperty(p)
 
     def onAVStarted(self):
@@ -101,6 +108,9 @@ class Player(xbmc.Player):
             path = self.getPlayingFile()
         except RuntimeError:
             return
+        name = file_name(path)
+        if name:
+            self.home.setProperty(PROP_FILENAME, name)
         with self.lock:
             gen = self.generation
         threading.Thread(target=self._publish, args=(gen, path), daemon=True).start()
